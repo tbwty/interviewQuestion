@@ -1,0 +1,102 @@
+import java.util.ArrayList;
+import java.util.Stack;
+
+//Find a pair with given sum in a Balanced BST
+class TreeNode {
+	int val;
+	TreeNode left;
+	TreeNode right;
+	TreeNode(int x) { val = x; }
+ }
+
+class NodePair{
+    TreeNode head;
+    TreeNode tail;
+}
+/* The idea was to first in-place convert BST to Doubly Linked List (DLL), then find pair in sorted DLL in O(n) time. 
+ * This solution takes O(n) time and O(Logn) extra space, but it modifies the given BST.
+ * The solution discussed below takes O(n) time, O(Logn) space and doesn’t modify BST. */
+
+public class Solution {
+	public boolean isPairPresent(TreeNode root, int target) {
+		//stack1 is for normal inorder traverse
+		Stack<TreeNode> s1 = new Stack<TreeNode>();
+		//stack2 is for reverse inorder traverse
+		Stack<TreeNode> s2 = new Stack<TreeNode>();
+		
+		boolean done1 = false, done2 = false;
+		int val1 = 0, val2 = 0;
+		TreeNode cur1 = root;
+		TreeNode cur2 = root;
+		while (true) {
+			while (!done1) {
+				if (cur1 != null) {
+					s1.push(cur1);
+					cur1 = cur1.left;
+				} else {
+					if (s1.isEmpty()) {
+						done1 = true;
+					} else {
+						cur1 = s1.pop();
+						val1 = cur1.val;
+						cur1 = cur1.right;
+						done1 = true;
+					}
+				}
+			}
+			while(!done2) {
+				if (cur2 != null) {
+					s2.push(cur2);
+					cur2 = cur2.right;
+				} else {
+					if (s2.isEmpty()) {
+						done2 = true;
+					} else {
+						cur2= s2.pop();
+						val2 = cur2.val;
+						cur2 = cur2.left;
+						done2 = true;
+					}
+				}
+			}
+			if (val1 > val2) {
+				return false;
+			}
+			if ((val1 != val2) && (val1 + val2 == target)) {
+				return true;
+			} else if (val1 + val2 < target) {
+				// If sum of current values is smaller, then move to next node in normal inorder traversal
+				done1 = false;
+			} else {
+				done2 = false;
+			}
+		}
+	}
+	
+	/* a function to convert given BST to double Linked List. left pointer is used as previous pointer 
+	 * and right pointer is used as next pointer. 
+	 * head: the first node of converted DLL
+	 * tail: the last node of converted DLL*/
+	public void convertBSTtoDLL(TreeNode root, NodePair result) {
+		if (root == null) {
+			return;
+		}
+		// First convert the left subtree
+		if (root.left != null) {
+			convertBSTtoDLL(root.left, result);
+		}
+		root.left = result.tail;
+		//If tail is not NULL, then set right of tail as root, else current node is head;
+		if (result.head == null) {
+			result.head = root;
+		} else {
+			result.tail.right = root;
+		}		
+		
+		//Finally, convert the right subtree
+		TreeNode right = root.right;
+		result.tail = root;
+		root.right = null;
+		convertBSTtoDLL(right, result);
+	}
+}
