@@ -1,0 +1,23 @@
+import java.util.Random;
+
+public class Solution {
+    public void swap(int[] arr, int i, int j) {
+    	int tmp = arr[j];
+    	arr[j] = arr[i];
+    	arr[i] = tmp;
+    }
+  /*Random rand = new Random(); 
+   * rand.nextInt(40);
+   *will only pick a random number from 0 to 39 inclusively*/
+    public void shuffleCards(int[] arr) {
+    	Random rand = new Random();
+    	int len = arr.length;
+    	for (int i = 1; i <= len; i++) {
+    		int temp = rand.nextInt(len) % i + 1;
+    		swap(arr, i - 1, temp - 1);
+    	}
+    }
+
+
+
+}
