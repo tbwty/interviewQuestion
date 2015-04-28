@@ -1,13 +1,39 @@
 import java.util.concurrent.atomic.AtomicInteger;
+//A small toolkit of classes that support lock-free thread-safe programming on single variables.
 
-
-public class Solution {
-	
-	private static AtomicInteger uniqueId = new AtomicInteger(0); 
-	
-	public static int getUniqueId() {
-		return uniqueId.addAndGet(1);
+//extending Thread object
+public class Solution extends Thread{
+	public void run() {
+		// TODO Auto-generated method stub
+		for (int count = 0; count < 10; count++) {
+			System.out.println("R - Going " + getUniqueId());
+		}
 	}
 	
+	private static AtomicInteger uniqueId = new AtomicInteger(0); 
+	//Creates a new AtomicInteger with the given initial value 0.
+	public static int getUniqueId() {
+		return uniqueId.addAndGet(1);
+		//Atomically adds the given value to the current value.
+	}
+	
+	public static void main(String args[]) {
+		 Solution thread1 = new Solution();
+		 Thread thread2 = new Thread(new SimpleRunnable());
+		 thread1.start();
+		 thread2.start();
+	}
 
+}
+
+//implementing Runnable interface
+class SimpleRunnable implements Runnable{
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		for (int count = 0; count < 8; count++) {
+			System.out.println("T - Going " + new Solution().getUniqueId());
+		}	
+	 }
+	
 }
