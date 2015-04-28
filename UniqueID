@@ -1,6 +1,7 @@
 import java.util.concurrent.atomic.AtomicInteger;
 //A small toolkit of classes that support lock-free thread-safe programming on single variables.
-
+/*Atomic operations are performed in a single unit of task without interference from other operations. 
+* Atomic operations are necessity in multi-threaded environment to avoid data inconsistency.*/
 //extending Thread object
 public class Solution extends Thread{
 	public void run() {
@@ -33,6 +34,21 @@ class SimpleRunnable implements Runnable{
 		// TODO Auto-generated method stub
 		for (int count = 0; count < 8; count++) {
 			System.out.println("T - Going " + new Solution().getUniqueId());
+		}	
+	 }
+	
+}
+class selfRunnable extends Thread{
+	private String name;
+	public selfRunnable(String name){
+		this.name = name;
+	}
+	@Override
+	
+	public void run() {
+		// TODO Auto-generated method stub
+		for (int count = 0; count < 8; count++) {
+			System.out.println(this.name + " - Going " + new Solution().getUniqueId());
 		}	
 	 }
 	
