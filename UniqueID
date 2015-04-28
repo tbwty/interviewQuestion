@@ -1,0 +1,13 @@
+import java.util.concurrent.atomic.AtomicInteger;
+
+
+public class Solution {
+	
+	private static AtomicInteger uniqueId = new AtomicInteger(0); 
+	
+	public static int getUniqueId() {
+		return uniqueId.addAndGet(1);
+	}
+	
+
+}
