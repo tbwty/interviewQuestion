@@ -10,25 +10,36 @@ of the present node in the tree that is being constructed.)*/
 
 
 
+package problems;
+
 import java.util.*;
 class Edge{
 	int node1;
 	int node2;
+	public Edge(int i, int j){
+		node1 = i;
+		node2 = j;
+	}
 }
 class Node {
 	int val;
 	boolean visited;
-	ArrayList<Node> adjacent;
+	List<Node> adjacent;
+	
 	public Node(int val){
 		this.val = val;
 		this.visited = false;
-		ArrayList<Node> adjacent = new ArrayList<Node>();
+		this.adjacent = new ArrayList<Node>();
+	}
+	
+	List<Node> getAdjacent() {
+		return adjacent;
 	}
 }
 
 public class graphCycle {
-	public boolean hasCycle(ArrayList<Edge> edges){
-		HashMap<Integer, Node> map = new HashMap<Integer, Node>();
+	public boolean hasCycle(List<Edge> edges){
+		Map<Integer, Node> map = new HashMap<Integer, Node>();
 		for( Edge e : edges) {
 			Node node1 = null;
 			Node node2 = null;
@@ -49,10 +60,12 @@ public class graphCycle {
 		}
 		
 		Node u = map.get(edges.get(0).node1);
-		
-		System.out.println("visited the node " + u.val);
-		u.visited = true;
-		
+		Node dummy = new Node(-1);
+		//System.out.println("visited the node " + u.val);
+		//u.visited = true;
+		if(isCyclicHelper(u, dummy)) {
+			return true;
+		}
 		
 		return false;
 	}
@@ -60,15 +73,35 @@ public class graphCycle {
 	public boolean isCyclicHelper(Node u, Node ancestor) {
 		//Mark current node visited
 		u.visited = true;
+		System.out.println("visited the node " + u.val);
 		for (Node node: u.adjacent) {
 			if (!node.visited) { //don't recur for node if it is already visited
 				if (isCyclicHelper(node, u)) {
 					return true;
-				} else if (node.val == ancestor.val) {
-					return true;
-				}
+				} 
+			}else if (node.val != ancestor.val) {
+				return true;
 			}
 		}
 		return false;
+	}
+}
+
+// Testing
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class testing {
+	public static void main(String[] args){
+		graphCycle tmp = new graphCycle();
+		ArrayList<Edge> edges = new ArrayList<Edge>();
+		edges.add(new Edge(1,0));
+		edges.add(new Edge(0,2));
+		//edges.add(new Edge(1,2));
+		//edges.add(new Edge(0,3));
+		//edges.add(new Edge(3,4));
+		 System.out.println(tmp.hasCycle(edges));
+	    
+		
 	}
 }
