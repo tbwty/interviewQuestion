@@ -1,0 +1,74 @@
+/*Yes, it is O(n). With a depth-first search in a directed graph has 3 types of non-tree edges - cross, back and forward.
+For an undirected case, the only kind of non-tree edge is a back edge. 
+So, you just need to search for back edges.
+In short, choose a starting vertex. Traverse and keep checking if the edge encountered is a back edge. 
+If you find n-1 tree edges without finding back-edges and then, run out of edges, you're gold.
+(Just to clarify - a back edge is one where the vertex at the other end has already been encountered -
+and because of the properties of undirected graphs, the vertex at the other end would be an ancestor 
+of the present node in the tree that is being constructed.)*/
+
+
+
+
+import java.util.*;
+class Edge{
+	int node1;
+	int node2;
+}
+class Node {
+	int val;
+	boolean visited;
+	ArrayList<Node> adjacent;
+	public Node(int val){
+		this.val = val;
+		this.visited = false;
+		ArrayList<Node> adjacent = new ArrayList<Node>();
+	}
+}
+
+public class graphCycle {
+	public boolean hasCycle(ArrayList<Edge> edges){
+		HashMap<Integer, Node> map = new HashMap<Integer, Node>();
+		for( Edge e : edges) {
+			Node node1 = null;
+			Node node2 = null;
+			if (!map.containsKey(e.node1)) {
+				 node1 = new Node(e.node1);
+				 map.put(e.node1, node1);
+			} else {
+				node1 = map.get(e.node1);
+			}
+			if(!map.containsKey(e.node2)) {
+				node2 = new Node(e.node2);
+				map.put(e.node2, node2);
+			} else {
+				node2 = map.get(e.node2);
+			}
+			node1.adjacent.add(node2);
+			node2.adjacent.add(node1);
+		}
+		
+		Node u = map.get(edges.get(0).node1);
+		
+		System.out.println("visited the node " + u.val);
+		u.visited = true;
+		
+		
+		return false;
+	}
+	
+	public boolean isCyclicHelper(Node u, Node ancestor) {
+		//Mark current node visited
+		u.visited = true;
+		for (Node node: u.adjacent) {
+			if (!node.visited) { //don't recur for node if it is already visited
+				if (isCyclicHelper(node, u)) {
+					return true;
+				} else if (node.val == ancestor.val) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+}
